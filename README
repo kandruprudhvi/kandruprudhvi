@@ -46,10 +46,38 @@ Docker image creation command.
 #docker build -t demo_final .
 Run the docker container for testing. 
 #docker run -itd demo_final --entrypoint /bin/bash
-For doing deployment from Kubernetes, you have to push this image to docker hub registry. And from that registry you can deploy this container on your Kubernetes cluster.
 Command to push docker image to the registry. 
 #docker push kandrup/demo_final:latest 
 #docker pull kandrup/demo_final:latest
+
+######For doing deployment from Kubernetes, you have to push this image to docker hub registry. And from that registry you can deploy this container on your Kubernetes cluster.
+Create a pull-request.yaml file
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo_final
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: python
+  template:
+    metadata:
+      labels:
+        app: python
+    spec:
+      containers:
+      - name: demo_final
+        image: demo_final
+
+ 
+ To deploy the application
+ # kubectl apply -f pull-request.yaml
+ To see deploymnents
+ # kubectl get deploymnets
+ 
 
 ###################### in case there is a scenario if Auth token should be passed as an env variable but not through python script then to run the docker container 
 you need to provide an env variable at the run time of the container. 
